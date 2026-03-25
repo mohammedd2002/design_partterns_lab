@@ -1,11 +1,12 @@
-public class User {
+public class User implements BookObserver {
     private String name;
     private boolean isPremium;
+
     public User(String name) {
         this.name = name;
     }
 
-    public User( String name,boolean isPremium) {
+    public User(String name, boolean isPremium) {
         this.isPremium = isPremium;
         this.name = name;
     }
@@ -26,5 +27,8 @@ public class User {
         isPremium = premium;
     }
 
-
+    @Override
+    public void update(String bookTitle) {
+        System.out.println("Notification to " + name + ": " + bookTitle + " is now available!");
+    }
 }

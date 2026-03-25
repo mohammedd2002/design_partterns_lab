@@ -2,12 +2,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LibraryService {
-    private LibraryService instance;
+    private static LibraryService instance;
     private List<Book> books = new ArrayList<>();
+    private List<BookObserver> observers = new ArrayList<>();
 
-    LibraryService(){
-
+    private LibraryService() {
     }
+
+    public static LibraryService getInstance() {
+        if (instance == null) {
+            instance = new LibraryService();
+        }
+        return instance;
+    }
+
+    public void addObserver(BookObserver observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers(String bookTitle) {
+        for (BookObserver observer : observers) {
+            observer.update(bookTitle);
+        }
+    }
+
     public void addBook(Book book) {
         books.add(book);
     }
@@ -21,7 +39,7 @@ public class LibraryService {
         return null;
     }
 
-    public void borrowBook(String title,User user) {
+    public void borrowBook(String title, User user) {
         Book book = findBook(title);
         if (book != null) {
             book.borrowBook(user);
@@ -34,6 +52,7 @@ public class LibraryService {
         Book book = findBook(title);
         if (book != null) {
             book.returnBook();
+            notifyObservers(title);
         } else {
             System.out.println("Book not found.");
         }
